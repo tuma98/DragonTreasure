@@ -23,7 +23,7 @@ GSPlay::GSPlay()
 {
 	m_SpawnCooldown = 0.7;
 	m_SpawnCooldownBoss = 0.3;
-	m_score = 0;
+	m_score = 51;
 	m_time = 0;
 }
 
@@ -153,7 +153,7 @@ void GSPlay::Update(float deltaTime)
 			if (m_score < 15) {
 				m_Player->Shoot(m_listBullet);
 			}
-			else if (m_score >= 15 && m_score < 65) {
+			else if (m_score >= 15 && m_score < 51) {
 				m_Player->ShootRight(m_listBulletRight);
 				m_Player->ShootLeft(m_listBulletLeft);
 			}

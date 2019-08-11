@@ -18,8 +18,8 @@ public:
 	bool		CanShoot();
 	void		Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet);
 	void		CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet);
-	void		CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet);
-	void		CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBullet);
+	void		CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBulletleft);
+	void		CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBulletright);
 
 	void		SetColliderSize(float size);
 	float		GetColliderSize();

@@ -104,11 +104,11 @@ void Enermy::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet)
 	}
 }
 
-void Enermy::CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet)
+void Enermy::CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBulletLeft)
 {
 	Vector2 pos = Get2DPosition();
 
-	for (auto bullet : listBullet)
+	for (auto bullet : listBulletLeft)
 	{
 		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPELEFT::Player)
 		{
@@ -123,11 +123,11 @@ void Enermy::CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBul
 	}
 }
 
-void Enermy::CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBullet)
+void Enermy::CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBulletRight)
 {
 	Vector2 pos = Get2DPosition();
 
-	for (auto bullet : listBullet)
+	for (auto bullet : listBulletRight)
 	{
 		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPERIGHT::Player)
 		{

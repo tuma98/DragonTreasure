@@ -20,8 +20,8 @@ public:
 	void		ShootLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet);
 	void		ShootRight(std::vector<std::shared_ptr<BulletRight>>& listBullet);
 	void		CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet);
-	void		CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet);
-	void		CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBullet);
+	void		CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBulletLeft);
+	void		CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBulletRight);
 
 	void		SetColliderSize(float size);
 	float		GetColliderSize();

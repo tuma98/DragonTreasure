@@ -10,7 +10,7 @@ Boss::Boss(std::shared_ptr<Models>& model, std::shared_ptr<Shaders>& shader, std
 	m_Cooldown = 0.0;
 	m_speed = 200;
 	m_MaxSpeed = 500;
-	m_Heal = 200000;
+	m_Heal = 5000;
 	m_Damage = 10000000;
 	m_Explosive = false;
 	m_SizeCollider = 100;
@@ -74,7 +74,7 @@ void Boss::Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet)
 	auto texture = ResourceManagers::GetInstance()->GetTexture("bullet");
 
 	std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(model, shader, texture);
-	bullet->SetSize(40, 40);
+	bullet->SetSize(20, 20);
 	bullet->Set2DPosition(Get2DPosition());
 	bullet->SetSpeed(-500);
 	bullet->SetType(BULLET_TYPE::Enermy);
@@ -101,7 +101,7 @@ void Boss::ShootLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet)
 	auto texture = ResourceManagers::GetInstance()->GetTexture("bullet");
 
 	std::shared_ptr<BulletLeft> bullet = std::make_shared<BulletLeft>(model, shader, texture);
-	bullet->SetSize(40, 40);
+	bullet->SetSize(20, 20);
 	bullet->Set2DPosition(Get2DPosition());
 	bullet->SetSpeed(-500);
 	bullet->SetType(BULLET_TYPELEFT::Enermy);
@@ -129,7 +129,7 @@ void Boss::ShootRight(std::vector<std::shared_ptr<BulletRight>>& listBullet)
 	auto texture = ResourceManagers::GetInstance()->GetTexture("bullet");
 
 	std::shared_ptr<BulletRight> bullet = std::make_shared<BulletRight>(model, shader, texture);
-	bullet->SetSize(40, 40);
+	bullet->SetSize(20, 20);
 	bullet->Set2DPosition(Get2DPosition());
 	bullet->SetSpeed(-500);
 	bullet->SetType(BULLET_TYPERIGHT::Enermy);
@@ -162,11 +162,11 @@ void Boss::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet)
 	}
 }
 
-void Boss::CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet)
+void Boss::CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBulletLeft)
 {
 	Vector2 pos = Get2DPosition();
 
-	for (auto bullet : listBullet)
+	for (auto bullet : listBulletLeft)
 	{
 		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPELEFT::Player)
 		{
@@ -181,11 +181,11 @@ void Boss::CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBulle
 	}
 }
 
-void Boss::CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBullet)
+void Boss::CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBulletRight)
 {
 	Vector2 pos = Get2DPosition();
 
-	for (auto bullet : listBullet)
+	for (auto bullet : listBulletRight)
 	{
 		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPERIGHT::Player)
 		{
@@ -210,7 +210,7 @@ void Boss::SetActive(bool status)
 {
 	m_active = status;
 	m_Explosive = false;
-	m_Heal = 10;
+	m_Heal = 5000;
 }
 
 void Boss::SetDamage(float damage)

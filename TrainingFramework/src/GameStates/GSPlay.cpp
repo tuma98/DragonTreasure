@@ -23,7 +23,7 @@ GSPlay::GSPlay()
 {
 	m_SpawnCooldown = 0.7;
 	m_SpawnCooldownBoss = 0.3;
-	m_score = 51;
+	m_score = 0;
 	m_time = 0;
 }
 

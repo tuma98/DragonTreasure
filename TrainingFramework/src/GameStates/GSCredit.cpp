@@ -39,6 +39,7 @@ void GSCredit::Init()
 	button->Set2DPosition(Application::screenWidth/2, 900);
 	button->SetSize(200, 200);
 	button->SetOnClick([]() {
+		Sleep(500);
 		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Menu);
 		});
 	m_listButton.push_back(button);

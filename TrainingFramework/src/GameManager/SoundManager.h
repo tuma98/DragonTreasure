@@ -16,6 +16,8 @@ public:
 	void PlaySound(const std::string& name, bool loop = false);
 	void PauseSound(const std::string& name);
 
+	float SoundNumber;
+
 private:
 	std::string m_SoundsPath;
 	std::map<std::string,std::shared_ptr<SoLoud::Wav>> m_MapWave;

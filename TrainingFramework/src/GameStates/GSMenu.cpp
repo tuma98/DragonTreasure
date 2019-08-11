@@ -31,6 +31,8 @@ void GSMenu::Init()
 	button->Set2DPosition(Application::screenWidth / 2, 300);
 	button->SetSize(200, 200);
 	button->SetOnClick([]() {
+		SoundManager::GetInstance()->PauseSound("Menu");
+		Sleep(500);
 		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Play);
 		});
 	m_listButton.push_back(button);
@@ -41,6 +43,7 @@ void GSMenu::Init()
 	button->Set2DPosition(Application::screenWidth / 2, 400);
 	button->SetSize(200, 200);
 	button->SetOnClick([]() {
+		Sleep(500);
 		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Setting);
 		});
 	m_listButton.push_back(button);
@@ -51,6 +54,7 @@ void GSMenu::Init()
 	button->Set2DPosition(Application::screenWidth / 2, 500);
 	button->SetSize(200, 200);
 	button->SetOnClick([]() {
+		Sleep(500);
 		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Credit);
 		});
 	m_listButton.push_back(button);

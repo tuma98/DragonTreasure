@@ -104,6 +104,44 @@ void Enermy::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet)
 	}
 }
 
+void Enermy::CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet)
+{
+	Vector2 pos = Get2DPosition();
+
+	for (auto bullet : listBullet)
+	{
+		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPELEFT::Player)
+		{
+			if (distance(pos, bullet->Get2DPosition()) < m_SizeCollider + bullet->GetColliderSize())
+			{
+				bullet->SetActive(false);
+				m_Heal -= bullet->GetDamage();
+				if (m_Heal <= 0)
+					return;
+			}
+		}
+	}
+}
+
+void Enermy::CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBullet)
+{
+	Vector2 pos = Get2DPosition();
+
+	for (auto bullet : listBullet)
+	{
+		if (bullet->IsActive() && bullet->GetType() == BULLET_TYPERIGHT::Player)
+		{
+			if (distance(pos, bullet->Get2DPosition()) < m_SizeCollider + bullet->GetColliderSize())
+			{
+				bullet->SetActive(false);
+				m_Heal -= bullet->GetDamage();
+				if (m_Heal <= 0)
+					return;
+			}
+		}
+	}
+}
+
 
 bool Enermy::IsActive()
 {

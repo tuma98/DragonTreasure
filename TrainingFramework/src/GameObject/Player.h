@@ -1,7 +1,10 @@
 #pragma once
 #include "Sprite2D.h"
 #include "Bullet.h"
+#include "BulletLeft.h"
+#include "BulletRight.h"
 #include <Enermy.h>
+#include <Boss.h>
 
 class Player : public Sprite2D
 {
@@ -15,8 +18,10 @@ public:
 
 	bool CanShoot();
 	void Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet);
+	void ShootLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet);
+	void ShootRight(std::vector<std::shared_ptr<BulletRight>>& listBullet);
 
-	void CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std::vector<std::shared_ptr<Enermy>> listEnermy);
+	void CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std::vector<std::shared_ptr<Enermy>> listEnermy, std::vector<std::shared_ptr<Boss>> listEnermy2, std::vector<std::shared_ptr<BulletLeft>>& listBulletLeft, std::vector<std::shared_ptr<BulletRight>>& listBulletRight);
 
 	void		SetColliderSize(float size);
 	float		GetColliderSize();

@@ -3,7 +3,10 @@
 
 class Player;
 class Bullet;
+class BulletLeft;
+class BulletRight;
 class Enermy;
+class Boss;
 class Text;
 class ExplosiveEffect;
 
@@ -36,11 +39,17 @@ private:
 	std::shared_ptr<Text>  m_playerHealText;
 	std::shared_ptr<Player> m_Player;
 	std::vector<std::shared_ptr<Bullet>> m_listBullet;
+	std::vector<std::shared_ptr<BulletLeft>> m_listBulletLeft;
+	std::vector<std::shared_ptr<BulletRight>> m_listBulletRight;
 	std::vector<std::shared_ptr<Enermy>> m_listEnermy;
+	std::vector<std::shared_ptr<Boss>> m_listEnermy2;
 	std::vector<std::shared_ptr<ExplosiveEffect>> m_listExplosiveEffect;
 
 	float m_SpawnCooldown;
+	float m_SpawnCooldownBoss;
 	void CreateRandomEnermy();
+	void CreateBoss();
 	void SpawnExplosive(Vector2 pos);
+	float m_time;
 };
 

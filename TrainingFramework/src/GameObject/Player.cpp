@@ -109,12 +109,70 @@ void Player::Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet)
 
 }
 
+void Player::ShootLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet)
+{
+	SoundManager::GetInstance()->PlaySound("fire");
+	m_Cooldown = m_MaxCooldown;
+	for (auto bullet : listBullet)
+	{
+		if (!bullet->IsActive())
+		{
+			bullet->SetActive(true);
+			bullet->Set2DPosition(Get2DPosition());
+			bullet->SetSpeed(500);
+			bullet->SetType(BULLET_TYPELEFT::Player);
+			return;
+		}
+	}
+
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D");
+	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("bullet");
+
+	std::shared_ptr<BulletLeft> bullet = std::make_shared<BulletLeft>(model, shader, texture);
+	bullet->SetSize(20, 20);
+	bullet->Set2DPosition(Get2DPosition());
+	bullet->SetSpeed(500);
+	bullet->SetType(BULLET_TYPELEFT::Player);
+
+	listBullet.push_back(bullet);
+}
+
+void Player::ShootRight(std::vector<std::shared_ptr<BulletRight>>& listBullet)
+{
+	SoundManager::GetInstance()->PlaySound("fire");
+	m_Cooldown = m_MaxCooldown;
+	for (auto bullet : listBullet)
+	{
+		if (!bullet->IsActive())
+		{
+			bullet->SetActive(true);
+			bullet->Set2DPosition(Get2DPosition());
+			bullet->SetSpeed(500);
+			bullet->SetType(BULLET_TYPERIGHT::Player);
+			return;
+		}
+	}
+
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D");
+	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("bullet");
+
+	std::shared_ptr<BulletRight> bullet = std::make_shared<BulletRight>(model, shader, texture);
+	bullet->SetSize(20, 20);
+	bullet->Set2DPosition(Get2DPosition());
+	bullet->SetSpeed(500);
+	bullet->SetType(BULLET_TYPERIGHT::Player);
+
+	listBullet.push_back(bullet);
+}
+
 float Player::distance(Vector2 pos, Vector2 target)
 {
 	return sqrt((pos.x - target.x) * (pos.x - target.x) + (pos.y - target.y) * (pos.y - target.y));
 }
 
-void Player::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std::vector<std::shared_ptr<Enermy>> listEnermy)
+void Player::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std::vector<std::shared_ptr<Enermy>> listEnermy,std::vector<std::shared_ptr<Boss>> listEnermy2, std::vector<std::shared_ptr<BulletLeft>>& listBulletLeft, std::vector<std::shared_ptr<BulletRight>>& listBulletRight)
 {
 	Vector2 pos = Get2DPosition();
 	for (auto enermy : listEnermy)
@@ -128,6 +186,16 @@ void Player::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std
 			}
 		}
 	}
+	for (auto enermy : listEnermy2)
+	{
+		if (enermy->IsActive())
+		{
+			if (distance(pos, enermy->Get2DPosition()) < m_SizeCollider + enermy->GetColliderSize())
+			{
+				m_Heal -= enermy->GetDamage();
+			}
+		}
+	}
 
 	for (auto bullet : listBullet)
 	{
@@ -137,6 +205,30 @@ void Player::CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet, std
 			{
 				bullet->SetActive(false);
 				m_Heal -= bullet->GetDamage();
+			}
+		}
+	}
+
+	for (auto bulletleft : listBulletLeft)
+	{
+		if (bulletleft->IsActive() && bulletleft->GetType() == BULLET_TYPELEFT::Enermy)
+		{
+			if (distance(pos, bulletleft->Get2DPosition()) < m_SizeCollider + bulletleft->GetColliderSize())
+			{
+				bulletleft->SetActive(false);
+				m_Heal -= bulletleft->GetDamage();
+			}
+		}
+	}
+
+	for (auto bulletright : listBulletRight)
+	{
+		if (bulletright->IsActive() && bulletright->GetType() == BULLET_TYPERIGHT::Enermy)
+		{
+			if (distance(pos, bulletright->Get2DPosition()) < m_SizeCollider + bulletright->GetColliderSize())
+			{
+				bulletright->SetActive(false);
+				m_Heal -= bulletright->GetDamage();
 			}
 		}
 	}

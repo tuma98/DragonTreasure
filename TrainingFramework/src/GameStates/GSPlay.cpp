@@ -12,13 +12,19 @@
 #include "Player.h"
 #include "Enermy.h"
 #include "Bullet.h"
+#include "BulletLeft.h"
+#include "BulletRight.h"
+#include "Boss.h"
+
 #include "ExplosiveEffect.h"
 
 int GSPlay::m_score = 0;
 GSPlay::GSPlay()
 {
-	m_SpawnCooldown = 0.5;
+	m_SpawnCooldown = 0.7;
+	m_SpawnCooldownBoss = 0.3;
 	m_score = 0;
+	m_time = 0;
 }
 
 
@@ -51,7 +57,7 @@ void GSPlay::Init()
 	std::shared_ptr<Font> font = ResourceManagers::GetInstance()->GetFont("arialbd");
 	m_scoreText = std::make_shared< Text>(shader, font, "SCORE: ", TEXT_COLOR::RED, 1.0);
 	m_scoreText->Set2DPosition(Vector2(5, 25));
-	m_playerHealText = std::make_shared< Text>(shader, font, "HEAL: ", TEXT_COLOR::RED, 1.0);
+	m_playerHealText = std::make_shared< Text>(shader, font, "HP: ", TEXT_COLOR::RED, 1.0);
 	m_playerHealText->Set2DPosition(Vector2(5, 50));
 
 	//init effect
@@ -69,7 +75,7 @@ void GSPlay::Init()
 	SoundManager::GetInstance()->AddSound("bground");
 	SoundManager::GetInstance()->AddSound("fire");
 	SoundManager::GetInstance()->AddSound("fire_enemy");
-	SoundManager::GetInstance()->PlaySound("Play");
+	SoundManager::GetInstance()->PlaySound("PlayLoop");
 
 }
 
@@ -112,6 +118,11 @@ void GSPlay::HandleTouchEvents(int x, int y, bool bIsPressed)
 
 void GSPlay::Update(float deltaTime)
 {
+	m_time += deltaTime;
+	if (m_time>700)
+	{
+		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Credit);
+	}
 
 	if (m_SpawnCooldown > 0)
 	{
@@ -123,20 +134,41 @@ void GSPlay::Update(float deltaTime)
 		m_SpawnCooldown = 0.3;
 	}
 
+	if (m_SpawnCooldownBoss > 0)
+	{
+		m_SpawnCooldownBoss -= deltaTime;
+	}
+	if (m_SpawnCooldownBoss <= 0)
+	{
+		SoundManager::GetInstance()->PlaySound("BossSound");
+		CreateBoss();
+		m_SpawnCooldownBoss = 1000000;
+	}
+
 	//update player
 	if (m_Player->IsAlive())
 	{
 		m_Player->Update(deltaTime);
-
-		if (m_Player->CanShoot())
-			m_Player->Shoot(m_listBullet);
-
-		m_Player->CheckCollider(m_listBullet, m_listEnermy);
+		if (m_Player->CanShoot()) {
+			if (m_score < 15) {
+				m_Player->Shoot(m_listBullet);
+			}
+			else if (m_score >= 15 && m_score < 65) {
+				m_Player->ShootRight(m_listBulletRight);
+				m_Player->ShootLeft(m_listBulletLeft);
+			}
+			else {
+				m_Player->Shoot(m_listBullet);
+				m_Player->ShootLeft(m_listBulletLeft);
+				m_Player->ShootRight(m_listBulletRight);
+			}
+		}
+		m_Player->CheckCollider(m_listBullet, m_listEnermy,m_listEnermy2,m_listBulletLeft,m_listBulletRight);
 	}
 	else
 	{
-		SoundManager::GetInstance()->PauseSound("Play");
-		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Menu);
+		SoundManager::GetInstance()->PauseSound("PlayLoop");
+		GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_GameOver);
 	}
 
 	//update enermies
@@ -154,6 +186,8 @@ void GSPlay::Update(float deltaTime)
 			if (enermy->CanShoot())
 				enermy->Shoot(m_listBullet);
 			enermy->CheckCollider(m_listBullet);
+			enermy->CheckColliderLeft(m_listBulletLeft);
+			enermy->CheckColliderRight(m_listBulletRight);
 		}
 	}
 
@@ -173,6 +207,58 @@ void GSPlay::Update(float deltaTime)
 			bullet->Update(deltaTime);
 	}
 
+	for (auto bullet : m_listBulletRight)
+	{
+		if (bullet->IsActive())
+			bullet->Update(deltaTime);
+	}
+
+	for (auto bullet : m_listBulletLeft)
+	{
+		if (bullet->IsActive())
+			bullet->Update(deltaTime);
+	}
+
+	//update boss 
+	if (m_score == 51)
+	{
+		m_SpawnCooldown = 10000000;
+		for (auto Boss : m_listEnermy2)
+		{
+			if (Boss->IsActive())
+			{
+				if (Boss->IsExplosive())
+				{
+
+					Boss->SetActive(false);
+					SpawnExplosive(Boss->Get2DPosition());
+					continue;
+
+
+				}
+
+				Boss->Update(deltaTime);
+
+				if (Boss->CanShoot()) {
+					Boss->Shoot(m_listBullet);
+					Boss->ShootLeft(m_listBulletLeft);
+					Boss->ShootRight(m_listBulletRight);
+				}
+				Boss->CheckCollider(m_listBullet);
+				Boss->CheckColliderLeft(m_listBulletLeft);
+				Boss->CheckColliderRight(m_listBulletRight);
+			}
+			if (Boss->IsActive() == false)
+			{
+				SoundManager::GetInstance()->PauseSound("PlayLoop");
+				GameStateMachine::GetInstance()->ChangeState(StateTypes::STATE_Victory);
+
+			}
+		}
+	}
+
+
+
 	//update Score
 	std::stringstream stream;
 	stream << std::fixed << std::setprecision(0) << m_score;
@@ -180,7 +266,7 @@ void GSPlay::Update(float deltaTime)
 	m_scoreText->setText(score);
 	std::stringstream stream2;
 	stream2 << std::fixed << std::setprecision(0) << m_Player->GetHeal();
-	std::string heal = "HEAL: " + stream2.str();
+	std::string heal = "HP: " + stream2.str();
 	m_playerHealText->setText(heal);
 }
 
@@ -193,10 +279,27 @@ void GSPlay::Draw()
 		if (enermy->IsActive())
 			enermy->Draw();
 
+	if (m_score == 51) {
+		for (auto enermy : m_listEnermy)
+			if (enermy->IsActive())
+				enermy->SetActive(0);
+		for (auto Boss : m_listEnermy2)
+			if (Boss->IsActive())
+				Boss->Draw();
+	}
+
 	if (m_Player->IsAlive())
 		m_Player->Draw();
 
 	for (auto bullet : m_listBullet)
+		if (bullet->IsActive())
+			bullet->Draw();
+
+	for (auto bullet : m_listBulletRight)
+		if (bullet->IsActive())
+			bullet->Draw();
+
+	for (auto bullet : m_listBulletLeft)
 		if (bullet->IsActive())
 			bullet->Draw();
 
@@ -211,6 +314,27 @@ void GSPlay::Draw()
 	//UI
 	m_scoreText->Draw();
 	m_playerHealText->Draw();
+}
+
+void GSPlay::CreateBoss()
+{
+
+	Vector2 pos;
+	pos.x = Application::screenWidth / 2;
+	pos.y = 200;
+
+
+	auto model = ResourceManagers::GetInstance()->GetModel("Sprite2D");
+	auto shader = ResourceManagers::GetInstance()->GetShader("TextureShader");
+	auto texture = ResourceManagers::GetInstance()->GetTexture("Boss");
+
+	std::shared_ptr<Boss> enermy = std::make_shared<Boss>(model, shader, texture);
+
+	enermy->SetActive(true);
+
+	enermy->Set2DPosition(pos);
+	enermy->SetSize(500, 500);
+	m_listEnermy2.push_back(enermy);
 }
 
 void GSPlay::CreateRandomEnermy()

@@ -2,6 +2,8 @@
 
 #include "Sprite2D.h"
 #include <Bullet.h>
+#include <BulletLeft.h>
+#include <BulletRight.h>
 
 class Enermy : public Sprite2D
 {
@@ -16,6 +18,8 @@ public:
 	bool		CanShoot();
 	void		Shoot(std::vector<std::shared_ptr<Bullet>>& listBullet);
 	void		CheckCollider(std::vector<std::shared_ptr<Bullet>>& listBullet);
+	void		CheckColliderLeft(std::vector<std::shared_ptr<BulletLeft>>& listBullet);
+	void		CheckColliderRight(std::vector<std::shared_ptr<BulletRight>>& listBullet);
 
 	void		SetColliderSize(float size);
 	float		GetColliderSize();

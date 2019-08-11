@@ -89,6 +89,11 @@
     </ClCompile>
     <ClCompile Include="src\GameStates\GSCredit.cpp" />
     <ClCompile Include="src\GameStates\GSSetting.cpp" />
+    <ClCompile Include="src\GameObject\BulletLeft.cpp" />
+    <ClCompile Include="src\GameObject\BulletRight.cpp" />
+    <ClCompile Include="src\GameObject\Boss.cpp" />
+    <ClCompile Include="src\GameStates\GSGameOver.cpp" />
+    <ClCompile Include="src\GameStates\GSVictory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -174,6 +179,11 @@
     </ClInclude>
     <ClInclude Include="src\GameStates\GSCredit.h" />
     <ClInclude Include="src\GameStates\GSSetting.h" />
+    <ClInclude Include="src\GameObject\BulletLeft.h" />
+    <ClInclude Include="src\GameObject\BulletRight.h" />
+    <ClInclude Include="src\GameObject\Boss.h" />
+    <ClInclude Include="src\GameStates\GSGameOver.h" />
+    <ClInclude Include="src\GameStates\GSVictory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

@@ -210,7 +210,7 @@ void Boss::SetActive(bool status)
 {
 	m_active = status;
 	m_Explosive = false;
-	m_Heal = 5000;
+	m_Heal = 1500;
 }
 
 void Boss::SetDamage(float damage)
